@@ -6,7 +6,10 @@ namespace ConsoleUI
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            Application application = new Application();
+            application.AddCommand(new ExitCommand(application));
+            application.AddCommand(new HelpCommand(application));
+            application.Run();
         }
     }
 }
