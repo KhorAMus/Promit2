@@ -5,19 +5,22 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using Microsoft.EntityFrameworkCore;
+using System.IO.Abstractions;
+using Model.WordsServices;
 
-namespace Model
+namespace Model.WordServices
 {
     public class WordsService
     {
-        private static readonly char[] _delimitersInFile = new[] { ' ', '\t', '\n', '\r' };
-
         private readonly string _wordsTableName;
 
-        private WordsContext _context;
+        private readonly WordsContext _context;
 
-        public WordsService(WordsContext wordsContext)
+        private readonly IFileReader _fileReader;
+
+        public WordsService(WordsContext wordsContext, IFileReader fileReader)
         {
+            _fileReader = fileReader;
             _context = wordsContext;
             var entityType = _context.Model.FindEntityType(typeof(Word));
             _wordsTableName = entityType.GetTableName();
@@ -25,26 +28,14 @@ namespace Model
 
         public async Task CreateDictionary(string fileName)
         {
-            Dictionary<string, int> wordToCount = await ReadFile(fileName);
+            Dictionary<string, int> wordToCount = await _fileReader.ReadFile(fileName);
             await ClearDictionary();
             var wordEntities = wordToCount.Select((wordAndCount) => new Word() { Count = wordAndCount.Value, Value = wordAndCount.Key })
                                           .ToList();
             await _context.Words.AddRangeAsync(wordEntities);
         }
 
-        private static async Task<Dictionary<string, int>> ReadFile(string fileName)
-        {
-            var fileText = await File.ReadAllTextAsync(fileName);
-            var words = fileText.Split(_delimitersInFile, StringSplitOptions.RemoveEmptyEntries);
-            var wordToCount = new Dictionary<string, int>();
-            foreach (var word in words)
-            {
-                wordToCount.TryAdd(word, 0);
-                wordToCount[word]++;
-            }
 
-            return wordToCount;
-        }
 
         public async Task ClearDictionary()
         {
