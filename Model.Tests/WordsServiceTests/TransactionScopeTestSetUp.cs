@@ -29,7 +29,7 @@ namespace Model.Tests.WordsServiceTests
             var builder = new DbContextOptionsBuilder<WordsContext>();
 
             builder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
-            builder.UseSqlServer($"Data Source=.\\SQLEXPRESS;Initial Catalog={DatabaseName};Integrated Security=true;MultipleActiveResultSets=True")
+            builder.UseSqlServer($"Server=(localdb)\\mssqllocaldb;Database={DatabaseName};Trusted_Connection=True;MultipleActiveResultSets=true")
                 .UseInternalServiceProvider(serviceProvider);
 
             Context = new WordsContext(builder.Options);
