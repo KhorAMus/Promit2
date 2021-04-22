@@ -26,12 +26,12 @@ namespace ConsoleUI
 
         static void Main(string[] args)
         {
-            var host = Host.CreateDefaultBuilder(args)
-                .ConfigureServices((hostBuilderContext, services) => services.AddDbContext<WordsContext>(option =>
-                    option.UseSqlServer(hostBuilderContext.Configuration.GetConnectionString("DefaultConnection"))))
-                .Build();
+            IHost host = CreateHostBuilder(args).Build();
+
 
             var services = host.Services;
+
+            var context = services.GetRequiredService<WordsContext>();
 
             if (!args.Any())
             {
@@ -54,6 +54,17 @@ namespace ConsoleUI
             }
 
 
+        }
+
+        private static IHostBuilder CreateHostBuilder(string[] args)
+        {
+            return Host.CreateDefaultBuilder(args)
+                .ConfigureServices((hostBuilderContext, services) => services.AddDbContext<WordsContext>(option =>
+                {
+                    var connString = hostBuilderContext.Configuration.GetConnectionString("DefaultConnection");
+                    var section1 = hostBuilderContext.Configuration.GetSection("ConnectionStrings")["DefaultConnection"];
+                    option.UseSqlServer(connString);
+                }));
         }
     }
 }

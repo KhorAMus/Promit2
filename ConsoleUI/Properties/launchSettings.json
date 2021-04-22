@@ -3,9 +3,7 @@
     "ConsoleUI": {
       "commandName": "Project",
       "commandLineArgs": "\"создание словаря\""
+
     }
-  },
-  "ConnectionStrings": {
-    "DefaultConnection": "Data Source=.\\SQLEXPRESS;Initial Catalog=Promit2;Integrated Security=true;MultipleActiveResultSets=True"
   }
 }

@@ -33,6 +33,7 @@ namespace Model.WordServices
             var wordEntities = wordToCount.Select((wordAndCount) => new Word() { Count = wordAndCount.Value, Value = wordAndCount.Key })
                                           .ToList();
             await _context.Words.AddRangeAsync(wordEntities);
+            _context.SaveChanges();
         }
 
 
@@ -40,6 +41,7 @@ namespace Model.WordServices
         public async Task ClearDictionary()
         {
             await _context.Database.ExecuteSqlRawAsync($"TRUNCATE TABLE [{_wordsTableName}]");
+            _context.SaveChanges();
         }
     }
 }

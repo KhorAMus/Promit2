@@ -3,7 +3,7 @@ using NUnit.Framework;
 using System.IO.Abstractions.TestingHelpers;
 using System.Linq;
 
-namespace Model.Tests.WordsService
+namespace Model.Tests.WordsServiceTests
 {
 
     public class FileReaderUnitTests
